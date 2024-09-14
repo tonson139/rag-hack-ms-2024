@@ -30,14 +30,35 @@ public class RAGService {
         this.objectMapper = objectMapper;
     }
 
+    private final String PROMPT_INTENT_VALIDATE = """
+            Is this question asking for a Political science <question>%s<question>. Answer only 'YES' or 'NO'"
+            """;
+    private final String PROMPT_KEYWORD_EXTRACT = """
+            What is the keywords or meaning about Political science in this question asking <question>%s<question>.
+            Strictly Answer in this format <format>['keyword_1','keyword_2',...'keyword_n']<format>
+            """;
+    private final String PROMPT_GENERATE_ANSWER = """
+            "You as a Political science Teaching Assistant. Answer student question: <question>%s<question>.
+            Reference your answer only this books in the list to answer books list is [%s]. If don't have answer 'you don't know'";
+            """;
+
     @SneakyThrows
     public String generateResponse(String userPrompt) {
-        var searchResult = this.vectorStoreRepository.doSimilaritySearch(SearchRequest.query(userPrompt));
+        var responseValidateIntent = chatModel.call(new Prompt(String.format(PROMPT_INTENT_VALIDATE, userPrompt), options));
+        var isAboutBook = responseValidateIntent.getResult().getOutput().getContent();
+        log.info("pre-defined intent isAboutBook: {}", isAboutBook);
+
+        if ("NO".equals(isAboutBook))
+            return "I'm Political science Teaching Assistant. I can only answer about book suggestions";
+
+        var responseKeyword = chatModel.call(new Prompt(String.format(PROMPT_KEYWORD_EXTRACT, userPrompt), options));
+        var searchKeyword = responseKeyword.getResult().getOutput().getContent();
+        log.info("keyword extracting: {}", searchKeyword);
+
+        var searchResult = this.vectorStoreRepository.doSimilaritySearch(SearchRequest.query(searchKeyword));
         log.info("searchResult: id={}", objectMapper.writeValueAsString(searchResult.stream().map(it -> it.getId())));
         var bookTitleLists = searchResult.stream().map(it -> (String) it.getMetadata().get("Title")).collect(Collectors.joining(","));
-        var templatePrompt = String.format("You as a Political science Teaching Assistant. Answer student question: %s. and reference only this books in the list to answer books list is [%s]. If don't have answer 'you don't know'",
-                userPrompt,
-                bookTitleLists);
+        var templatePrompt = String.format(PROMPT_GENERATE_ANSWER, userPrompt, bookTitleLists);
         log.info("templatePrompt: {}", templatePrompt);
         var response = chatModel.call(new Prompt(templatePrompt, options));
         return response.getResult().getOutput().getContent();

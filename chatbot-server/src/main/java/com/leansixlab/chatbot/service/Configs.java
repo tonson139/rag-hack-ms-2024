@@ -38,6 +38,7 @@ public class Configs {
     OllamaOptions getOllamaOptions() {
         return OllamaOptions.builder()
                 .withModel(model)
+                .withNumCtx(100)
                 .withTemperature(0.2f)
                 .build();
     }
