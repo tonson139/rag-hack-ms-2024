@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: chatbot
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: admin1234!
+  ai:
+    ollama:
+      base-url: http://192.168.1.219:11434
+      chat:
+        enabled: true
+        options:
+          model: llama3.1:8b-instruct-q2_K
+      embedding:
+        enabled: true
+        options:
+          model: nomic-embed-text
+#    openai:
+#      base-url: https://api.openai.com
+#      api-key: ${OPENAI_APIKEY}
+#      embedding:
+#        enabled: false
+#        options:
+#          model: text-embedding-3-small
+    vectorstore:
+      pgvector:
+        schema-name: public
+        table-name: vector_store
+        initialize-schema: true
+        schema-validation: false
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+logging:
+  level:
+    org:
+      springframework:
+        jdbc:
+          core: TRACE
+
+
+
+

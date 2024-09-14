@@ -1,0 +1,106 @@
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 09 Sep 2024 14:24:25 GMT
+
+{"applyWorkResult":"Akarishi Moshi fiction","inventorResult":"Akarishi Moshi fiction","tigerResult":"Akarishi Moshi fiction"}
+
+HTTP/1.1 200
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 09 Sep 2024 14:25:47 GMT
+
+{"applyWorkResult":"Akarishi Moshi fiction","inventorResult":"Akarishi Moshi fiction","tigerResult":"Akarishi Moshi fiction"}
+
+HTTP/1.1 200
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 09 Sep 2024 14:27:46 GMT
+
+{"applyWorkResult":"Akarishi Moshi fiction","inventorResult":"Akarishi Moshi fiction","tigerResult":"Akarishi Moshi fiction"}
+
+/// keyword "Source Animals Ethically", "An inventor", "Software Engineer"
+HTTP/1.1 200
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 09 Sep 2024 14:31:25 GMT
+
+{"applyWorkResult":"how to write a resume","inventorResult":"Akarishi Moshi fiction","tigerResult":"how to open a zoo"}
+
+HTTP/1.1 200
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 09 Sep 2024 14:33:36 GMT
+
+{"applyWorkResult":"how to write a resume","inventorResult":"Akarishi Moshi fiction","tigerResult":"how to open a zoo"}
+
+
+/// keyword "I want to be a zookeeper", "I want to be an inventor", "I'm looking for a job"HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 09 Sep 2024 14:36:59 GMT
+
+{"tigerResult":"how to open a zoo","inventorResult":"how to open a zoo","applyWorkResult":"how to open a zoo"}
+
+HTTP/1.1 200
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 09 Sep 2024 14:38:40 GMT
+
+{"tigerResult":"how to open a zoo","inventorResult":"how to open a zoo","applyWorkResult":"how to open a zoo"}
+
+HTTP/1.1 200
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 09 Sep 2024 14:40:57 GMT
+
+{"tigerResult":"how to open a zoo","inventorResult":"how to open a zoo","applyWorkResult":"how to open a zoo"}
+
+
+HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 09 Sep 2024 15:55:35 GMT
+
+{"inventorResult":"how to open a zoo","applyWorkResult":"how to write a resume","tigerResult":"how to open a zoo"}
+
+// fail
+HTTP/1.1 500
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 09 Sep 2024 15:57:29 GMT
+Connection: close
+
+{"timestamp":"2024-09-09T15:57:29.422+00:00","status":500,"error":"Internal Server Error","path":"/ai/embedding/search"}
+
+// new
+HTTP/1.1 200
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Mon, 09 Sep 2024 16:01:37 GMT
+
+{"tigerResult":"how to open a zoo","inventorResult":"Akarishi Moshi fiction","applyWorkResult":"how to write a resume"}
+
+// new model mxbai-embed-large
+HTTP/1.1 200
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Tue, 10 Sep 2024 14:43:53 GMT
+
+{"inventorResult":"Akarishi Moshi fiction","applyWorkResult":"how to open a zoo","tigerResult":"how to open a zoo"}HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Tue, 10 Sep 2024 15:02:58 GMT
+
+{"tigerResult":"how to open a zoo","inventorResult":"Akarishi Moshi fiction","applyWorkResult":"how to open a zoo"}HTTP/1.1 500 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Tue, 10 Sep 2024 15:12:27 GMT
+Connection: close
+
+{"timestamp":"2024-09-10T15:12:27.905+00:00","status":500,"error":"Internal Server Error","path":"/ai/embedding/search"}HTTP/1.1 200 
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Tue, 10 Sep 2024 15:14:40 GMT
+
+{"tigerResult":"how to open a zoo","applyWorkResult":"how to write a resume","inventorResult":"Akarishi Moshi fiction"}

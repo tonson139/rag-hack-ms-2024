@@ -1,0 +1,17 @@
+services:
+  db:
+    hostname: pgsql
+    image: pgvector/pgvector:0.7.4-pg16
+    ports:
+     - 5432:5432
+    restart: always
+    environment:
+      - POSTGRES_DB=vectordb
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin1234!
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    volumes:
+      - pgsql:/var/lib/postgresql/data
+
+volumes:
+  pgsql:
