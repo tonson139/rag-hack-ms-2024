@@ -9,7 +9,7 @@ const getAIResponse = async (message: string): Promise<string> => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     return new Promise((resolve, reject) => {
-        fetch("http://localhost:8080/mock/ai/generate-response", {
+        fetch("http://localhost:8080/ai/generate-response", {
             method: "POST",
             headers: myHeaders,
             body: JSON.stringify({ message }),
@@ -33,7 +33,7 @@ const getAIResponse = async (message: string): Promise<string> => {
     });
 };
 
-export default function ChatInterface() {
+export function ChatInterfaceComponent() {
     const [messages, setMessages] = useState<
         Array<{ role: "user" | "ai"; content: string }>
     >([]);
@@ -63,9 +63,10 @@ export default function ChatInterface() {
     };
 
     return (
-        <div className="flex flex-col h-screen max-w-2xl mx-auto">
-            <header className="p-4 border-b">
-                <h1 className="text-sm font-bold text-center">
+        <div className="flex flex-col h-screen max-w-5xl mx-auto">
+            <header className="p-4 border-b bg-slate-900">
+                <h1 className="text-2xl font-bold text-center text-white">
+                    {" "}
                     Political Science TA
                 </h1>
             </header>
