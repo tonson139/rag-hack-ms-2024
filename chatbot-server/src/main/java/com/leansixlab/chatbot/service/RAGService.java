@@ -49,7 +49,7 @@ public class RAGService {
         log.info("pre-defined intent isAboutBook: {}", isAboutBook);
 
         if ("NO".equals(isAboutBook))
-            return "I'm Political science Teaching Assistant. I can only answer about book suggestions";
+            return "I'm Political science Teaching Assistant. I can only answer about Political science.";
 
         var responseKeyword = chatModel.call(new Prompt(String.format(PROMPT_KEYWORD_EXTRACT, userPrompt), options));
         var searchKeyword = responseKeyword.getResult().getOutput().getContent();
