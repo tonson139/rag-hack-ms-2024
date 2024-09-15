@@ -31,36 +31,58 @@ public class RAGService {
     }
 
     private final String PROMPT_INTENT_VALIDATE = """
-            Is this question asking for a Political science <question>%s<question>. Answer only 'YES' or 'NO'"
+            You as a Philosophy and Political science Teaching Assistant. Is this student question question asking about a Philosophy and Political science. 
+            <student-question>%s<student-question>.
+            Strictly answer only 'YES' or 'NO'
             """;
     private final String PROMPT_KEYWORD_EXTRACT = """
-            What is the keywords or meaning about Political science in this question asking <question>%s<question>.
-            Strictly Answer in this format <format>['keyword_1','keyword_2',...'keyword_n']<format>
+            What is the keywords or meaning about Philosophy and Political science in this question asking.
+            <question>%s<question>.
+            Strictly answer in this json format '{ keywords: string[] }'
             """;
-    private final String PROMPT_GENERATE_ANSWER = """
-            "You as a Political science Teaching Assistant. Answer student question: <question>%s<question>.
-            Reference your answer only this books in the list to answer books list is [%s]. If don't have answer 'you don't know'";
+    private final String PROMPT_GENERATE_ANSWER_WITH_REFERENCE = """
+            You as a Philosophy and Political science Teaching Assistant. Answer student question:
+            <question>%s<question>.
+            Reference your answer with the books in this list [%s] as a bullet point at the ending of answer.
+            """;
+    private final String PROMPT_GENERATE_ANSWER_NO_REFERENCE = """
+            You as a Philosophy and Political science Teaching Assistant. Do not hallucinate!. Answer student question:
+            <question>%s<question>.
+            Also tell that you don't have a reference book for this question.
             """;
 
     @SneakyThrows
     public String generateResponse(String userPrompt) {
-        var responseValidateIntent = chatModel.call(new Prompt(String.format(PROMPT_INTENT_VALIDATE, userPrompt), options));
-        var isAboutBook = responseValidateIntent.getResult().getOutput().getContent();
-        log.info("pre-defined intent isAboutBook: {}", isAboutBook);
+        var validateIntentPrompt = new Prompt(String.format(PROMPT_INTENT_VALIDATE, userPrompt), options);
+        var responseValidateIntent = chatModel.call(validateIntentPrompt);
+        var isRelated = responseValidateIntent.getResult().getOutput().getContent();
+        log.info("[generateResponse][1]\n pre-defined intent isRelated prompt: {}, answer={}", validateIntentPrompt.getContents(), isRelated);
 
-        if ("NO".equals(isAboutBook))
-            return "I'm Political science Teaching Assistant. I can only answer about Political science.";
+        if ("NO".equals(isRelated))
+            return "I'm Philosophy and Political science Teaching Assistant. I can only answer about Philosophy and Political science.";
 
-        var responseKeyword = chatModel.call(new Prompt(String.format(PROMPT_KEYWORD_EXTRACT, userPrompt), options));
+        var keywordExtractPrompt = new Prompt(String.format(PROMPT_KEYWORD_EXTRACT, userPrompt), options.copy().withFormat("json"));
+        var responseKeyword = chatModel.call(keywordExtractPrompt);
         var searchKeyword = responseKeyword.getResult().getOutput().getContent();
-        log.info("keyword extracting: {}", searchKeyword);
+        log.info("[generateResponse][2]\n keyword extracting prompt: {}, answer: {}", keywordExtractPrompt, searchKeyword);
 
-        var searchResult = this.vectorStoreRepository.doSimilaritySearch(SearchRequest.query(searchKeyword));
-        log.info("searchResult: id={}", objectMapper.writeValueAsString(searchResult.stream().map(it -> it.getId())));
+        var searchResult = this.vectorStoreRepository.doSimilaritySearch(SearchRequest
+                .query(searchKeyword)
+                .withSimilarityThreshold(0.65)
+                .withTopK(2));
+
+        if(searchResult.isEmpty()) {
+            var templatePrompt = new Prompt(String.format(PROMPT_GENERATE_ANSWER_NO_REFERENCE, userPrompt), options);
+            var response = chatModel.call(templatePrompt);
+            log.info("[generateResponse][2.1]\n Not found reference. templatePrompt: {}, answer: {}", templatePrompt.getContents(), response.getResult().getOutput().getContent());
+            return response.getResult().getOutput().getContent();
+        }
+
+        log.info("[generateResponse][2.2]\n searchResult: id={}", objectMapper.writeValueAsString(searchResult.stream().map(it -> it.getId())));
         var bookTitleLists = searchResult.stream().map(it -> (String) it.getMetadata().get("Title")).collect(Collectors.joining(","));
-        var templatePrompt = String.format(PROMPT_GENERATE_ANSWER, userPrompt, bookTitleLists);
-        log.info("templatePrompt: {}", templatePrompt);
-        var response = chatModel.call(new Prompt(templatePrompt, options));
+        var templatePrompt = new Prompt(String.format(PROMPT_GENERATE_ANSWER_WITH_REFERENCE, userPrompt, bookTitleLists), options);
+        var response = chatModel.call(templatePrompt);
+        log.info("[generateResponse][3]\n templatePrompt: {}, answer: {}", templatePrompt.getContents(), response.getResult().getOutput().getContent());
         return response.getResult().getOutput().getContent();
     }
 }

@@ -19,6 +19,9 @@ public class Configs {
     @Value("${spring.ai.ollama.chat.options.model}")
     private String model;
 
+    @Value("${application.basic-auth}")
+    private String basicAuth;
+
     @Bean
     RestClient.Builder getRestClient() {
         var http = new HttpComponentsClientHttpRequestFactory();
@@ -26,7 +29,7 @@ public class Configs {
         return RestClient.builder()
                 .requestFactory(http)
                 .defaultHeader("ngrok-skip-browser-warning", "true")
-                .defaultHeader("Authorization", "Basic YWRtaW46YWRtaW4xMjM0IQ==");
+                .defaultHeader("Authorization", "Basic " + basicAuth);
     }
 
     @Bean

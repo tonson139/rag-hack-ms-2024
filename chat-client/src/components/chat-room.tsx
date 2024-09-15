@@ -3,37 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { SendIcon, UserIcon } from "lucide-react";
+import { Loader2, SendIcon, UserIcon } from "lucide-react";
+import { getAIResponse } from "../api";
 
-const getAIResponse = async (message: string): Promise<string> => {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    return new Promise((resolve, reject) => {
-        fetch("http://localhost:8080/ai/generate-response", {
-            method: "POST",
-            headers: myHeaders,
-            body: JSON.stringify({ message }),
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    reject(
-                        new Error(
-                            `Request failed with status ${response.status}`
-                        )
-                    );
-                }
-                return response.text();
-            })
-            .then((result) => {
-                resolve(result);
-            })
-            .catch((error) => {
-                reject(error);
-            });
-    });
-};
-
-export function ChatInterfaceComponent() {
+export function ChatRoom() {
     const [messages, setMessages] = useState<
         Array<{ role: "user" | "ai"; content: string }>
     >([]);
@@ -66,8 +39,7 @@ export function ChatInterfaceComponent() {
         <div className="flex flex-col h-screen max-w-5xl mx-auto">
             <header className="p-4 border-b bg-slate-900">
                 <h1 className="text-2xl font-bold text-center text-white">
-                    {" "}
-                    Political Science TA
+                    Philosophy and Political science
                 </h1>
             </header>
             <ScrollArea className="flex-grow p-4">
@@ -117,9 +89,18 @@ export function ChatInterfaceComponent() {
                     onChange={(e) => setInputMessage(e.target.value)}
                     className="flex-grow mr-2"
                 />
-                <Button type="submit" disabled={isLoading}>
+                <Button
+                    type="submit"
+                    disabled={isLoading}
+                    size="lg"
+
+                    // className="text-gray-900  borderfocus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                >
                     {isLoading ? (
-                        "Sending..."
+                        <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Sending...
+                        </>
                     ) : (
                         <SendIcon className="h-4 w-4" />
                     )}

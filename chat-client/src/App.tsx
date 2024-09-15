@@ -1,10 +1,10 @@
 import "./App.css";
-import { ChatInterfaceComponent } from "./components/chat-interface";
+import { ChatRoom } from "./components/chat-room";
 
 function App() {
     return (
         <main>
-            <ChatInterfaceComponent />
+            <ChatRoom />
         </main>
     );
 }
