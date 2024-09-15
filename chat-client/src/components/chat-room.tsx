@@ -37,9 +37,9 @@ export function ChatRoom() {
 
     return (
         <div className="flex flex-col h-screen max-w-5xl mx-auto">
-            <header className="p-4 border-b bg-slate-900">
+            <header className="p-4 border-b bg-zinc-700">
                 <h1 className="text-2xl font-bold text-center text-white">
-                    Philosophy and Political science
+                    Music recommender
                 </h1>
             </header>
             <ScrollArea className="flex-grow p-4">

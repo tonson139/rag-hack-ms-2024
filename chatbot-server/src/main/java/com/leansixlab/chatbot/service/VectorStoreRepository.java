@@ -50,6 +50,6 @@ public class VectorStoreRepository {
 
     private PGvector getQueryEmbedding(String query) {
         float[] embedding = this.embeddingModel.embed(query);
-        return new PGvector(ArrayUtil.concatenateArrays(embedding, embedding));
+        return new PGvector(embedding);
     }
 }
