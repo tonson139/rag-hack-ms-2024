@@ -10,6 +10,7 @@
 ## RAG_Hack
 -  https://github.com/microsoft/RAG_Hack/tree/main
 ## Features
+- Data set from https://www.kaggle.com/datasets/saurabhshahane/music-dataset-1950-to-2019
 - Search for song from lyrics
 - Find information about artist name, release data, genre, topic of the song.
 - Ask for suggestion of the song based on your preferences.
